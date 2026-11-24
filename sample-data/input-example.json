@@ -1,0 +1,16 @@
+{
+  "_note": "Made-up sample, shaped like the Gmail Trigger output (simple: false). Not a real email.",
+  "id": "example-message-id-001",
+  "threadId": "example-thread-id-001",
+  "labelIds": ["INBOX", "UNREAD", "Brightleaf-Support"],
+  "from": {
+    "value": [{ "address": "sam.rivera@example.com", "name": "Sam Rivera" }],
+    "text": "Sam Rivera <sam.rivera@example.com>"
+  },
+  "to": {
+    "value": [{ "address": "support@brightleaf.example", "name": "" }]
+  },
+  "subject": "How long does delivery take?",
+  "text": "Hi, I placed my first order yesterday. How long will shipping take, and do you ship to Canada?",
+  "headers": {}
+}

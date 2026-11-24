@@ -1,0 +1,82 @@
+{
+  "name": "Brightleaf A: Knowledge Base Ingest",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "36b520d2-8d26-4327-944a-3801a5584caa",
+      "name": "Run Ingestion",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [304, 304]
+    },
+    {
+      "parameters": {
+        "jsCode": "const docs = [\n  ['01 Shipping Policy', 'Orders leave our US warehouse within 1 to 2 business days. Delivery takes 3 to 7 business days after dispatch. Shipping is free over $40 and $5.95 below that. We ship within the United States only. A tracking link is emailed at dispatch.'],\n  ['02 Returns and Refunds', 'Unopened tins can be returned within 30 days of delivery for a refund to the original payment method. Opened tins cannot be returned. If a tin arrives damaged or wrong, email a photo within 7 days for a replacement or refund. Customers pay return shipping unless we sent the wrong item or it arrived damaged. Refunds take 5 to 10 business days to show.'],\n  ['03 Subscription Management', 'Subscriptions renew monthly on the signup date. From the account page a customer can pause, skip a month, change the blend or cancel, at least 48 hours before the next renewal. Cancelling stops future charges. Shipments already dispatched are not refunded.'],\n  ['04 Order Tracking', 'A tracking link is emailed when the order ships. If nothing arrives within 3 business days, check spam, then email support with the order number. Support cannot see live carrier updates, and the tracking link always has the latest status.'],\n  ['05 Brewing Guide', 'Green and sencha: 75 to 80 C water, 1 to 3 minutes. Oolong: 85 to 95 C, 2 to 4 minutes. Black: 95 to 100 C, 3 to 5 minutes. Herbal: 100 C, 5 to 7 minutes. Use about one teaspoon per cup.'],\n  ['06 Ingredients and Allergens', 'Full ingredient lists are on each product page. Support cannot give allergy or medical advice by email. Allergy questions are answered by a team member.'],\n  ['07 Billing and Payment', 'Cards are charged at the time of order. Subscriptions are charged on the renewal date. A failed payment is retried once after 3 days and the customer is emailed. Receipts are emailed after every charge.'],\n  ['08 Contact and Hours', 'Support is email only, Monday to Friday, 9am to 5pm Eastern. We reply within 1 business day.']\n];\nreturn docs.map(d => ({ json: { title: d[0], source: 'brightleaf-kb', text: d[0] + '. ' + d[1] } }));"
+      },
+      "id": "d6f78ad6-8de6-44c4-97ec-a187ea77287d",
+      "name": "Knowledge Base Documents",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [576, 304]
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": { "__rl": true, "mode": "id", "value": "brightleaf-kb" },
+        "options": { "clearNamespace": true, "pineconeNamespace": "brightleaf-kb-v1" }
+      },
+      "id": "e88cdc99-27f6-4252-8527-9d503ad97ac0",
+      "name": "Store in Pinecone",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.4,
+      "position": [848, 304],
+      "credentials": { "pineconeApi": { "name": "YOUR_PINECONE_CREDENTIAL" } }
+    },
+    {
+      "parameters": { "options": {} },
+      "id": "ee1986b5-74b7-4aab-8c9b-b50d64a5fae5",
+      "name": "OpenAI Embeddings",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [624, 512],
+      "credentials": { "openAiApi": { "name": "YOUR_OPENAI_CREDENTIAL" } }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.text }}",
+        "textSplittingMode": "custom",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              { "name": "title", "value": "={{ $json.title }}" },
+              { "name": "source", "value": "={{ $json.source }}" }
+            ]
+          }
+        }
+      },
+      "id": "694c06e5-31d6-4c75-ac69-2df093bafb34",
+      "name": "Document Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [992, 512]
+    },
+    {
+      "parameters": { "chunkSize": 800, "chunkOverlap": 100, "options": {} },
+      "id": "a20b6a3e-2ca4-47f5-b17c-63d9795b1362",
+      "name": "Chunk Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [992, 720]
+    }
+  ],
+  "connections": {
+    "Run Ingestion": { "main": [[{ "node": "Knowledge Base Documents", "type": "main", "index": 0 }]] },
+    "Knowledge Base Documents": { "main": [[{ "node": "Store in Pinecone", "type": "main", "index": 0 }]] },
+    "OpenAI Embeddings": { "ai_embedding": [[{ "node": "Store in Pinecone", "type": "ai_embedding", "index": 0 }]] },
+    "Document Loader": { "ai_document": [[{ "node": "Store in Pinecone", "type": "ai_document", "index": 0 }]] },
+    "Chunk Splitter": { "ai_textSplitter": [[{ "node": "Document Loader", "type": "ai_textSplitter", "index": 0 }]] }
+  },
+  "pinData": {},
+  "settings": { "executionOrder": "v1" }
+}

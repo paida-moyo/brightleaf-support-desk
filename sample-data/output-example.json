@@ -1,0 +1,28 @@
+{
+  "_note": "Made-up sample of what the workflow produces for input-example.json. Reply text is illustrative and follows the invented Brightleaf shipping policy.",
+  "classifier": { "category": "support" },
+  "agent_output": {
+    "reply": "Hello Sam, thanks for your order. Orders leave our warehouse within 1 to 2 business days and arrive 3 to 7 business days after dispatch. We ship within the United States only, so we are not able to deliver to Canada. We email a tracking link as soon as your order ships. Brightleaf Support",
+    "confidence": "high",
+    "needs_human": false,
+    "reason": "Answered from the shipping policy",
+    "sources_used": ["01 Shipping Policy"]
+  },
+  "gmail_result": {
+    "draft_saved_in_thread": true,
+    "labels_added": ["AI/Draft-Ready"],
+    "marked_read": true
+  },
+  "log_row": {
+    "logged_at": "2026-01-01T09:00:00.000Z",
+    "message_id": "example-message-id-001",
+    "thread_id": "example-thread-id-001",
+    "sender": "sam.rivera@example.com",
+    "subject": "How long does delivery take?",
+    "category": "support",
+    "action": "drafted",
+    "confidence": "high",
+    "reason": "Answered from the shipping policy",
+    "execution_id": "123"
+  }
+}

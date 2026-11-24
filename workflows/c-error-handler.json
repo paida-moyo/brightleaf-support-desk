@@ -1,0 +1,63 @@
+{
+  "name": "Brightleaf C: Error Handler",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "54614ba3-e514-4d0d-b558-b1b8816ddadb",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [16, 144]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "k1", "name": "alertEmail", "value": "YOUR_ALERT_EMAIL", "type": "string" }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "a814c955-13e5-41b0-80e2-a16f5add17ac",
+      "name": "Alert Settings",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [208, 144]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.alertEmail }}",
+        "subject": "=Workflow failed: {{ $json.workflow.name }}",
+        "emailType": "text",
+        "message": "=Failed node: {{ $json.execution.error?.node?.name ?? $json.execution.lastNodeExecuted }}\nError: {{ $json.execution.error?.message }}\nExecution: {{ $json.execution.url ?? $json.execution.id }}\n\nThe original email is still in the inbox. If it was not marked read, the workflow will try it again on the next poll.",
+        "options": { "appendAttribution": false }
+      },
+      "id": "35589eaa-785a-41f0-abf9-02eb7e34d369",
+      "name": "Send Failure Alert",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [400, 144],
+      "credentials": { "gmailOAuth2": { "name": "YOUR_GMAIL_CREDENTIAL" } }
+    },
+    {
+      "parameters": {
+        "content": "## Workflow C: Error Handler\nSet as the error workflow for A and B. Set alertEmail in Alert Settings to receive failure alerts.",
+        "height": 224,
+        "width": 160,
+        "color": 3
+      },
+      "id": "a71a8cf0-f15c-4624-9407-229a614a66ce",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-864, -96]
+    }
+  ],
+  "connections": {
+    "Error Trigger": { "main": [[{ "node": "Alert Settings", "type": "main", "index": 0 }]] },
+    "Alert Settings": { "main": [[{ "node": "Send Failure Alert", "type": "main", "index": 0 }]] }
+  },
+  "pinData": {},
+  "settings": { "executionOrder": "v1" }
+}
