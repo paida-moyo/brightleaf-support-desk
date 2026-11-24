@@ -4,8 +4,6 @@ An n8n workflow set that reads customer emails in Gmail, decides whether each on
 
 ![n8n canvas of the support email responder](assets/workflow-canvas.png)
 
-I built this as a portfolio project for an Upwork posting titled "AI Automation Specialist Needed for n8n Customer Support Workflow". The shop in it, Brightleaf Tea Co., is a made-up business, and every policy in the knowledge base is invented for the demo.
-
 ## What I built
 
 Small shops usually answer the same few questions all day: where is my order, can I return this, how do I pause my subscription. The answers already exist in a policy page somewhere, but someone still has to read each email, find the answer and type it out. This project does the reading and the first draft, and leaves the decision to send with a person unless they choose otherwise.
@@ -121,8 +119,4 @@ This project shows the full path from an incoming email to a safe, reviewable re
 
 ## Author
 
-Built by Paidamoyo of Clarity Desk.
-
-- Upwork: YOUR_UPWORK_PROFILE_LINK
-- LinkedIn: YOUR_LINKEDIN_LINK
-- Website: YOUR_WEBSITE_LINK
+Built by Paidamoyo
